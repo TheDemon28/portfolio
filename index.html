@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kunal More — Full-Stack Developer</title>
+    <title>Kunal More — Portfolio</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link
       href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap"
       rel="stylesheet"
@@ -58,12 +59,28 @@
       }
 
       .nav-logo {
-        font-family: var(--mono);
-        font-size: 13px;
-        color: var(--accent);
-        letter-spacing: 2px;
-        text-transform: uppercase;
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
         flex-shrink: 0;
+        text-decoration: none;
+        transition:
+          transform 0.2s,
+          opacity 0.2s;
+      }
+
+      .nav-logo:hover {
+        transform: translateY(-1px);
+        opacity: 0.9;
+      }
+
+      .nav-logo img {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
 
       .nav-links {
@@ -84,6 +101,38 @@
 
       .nav-links a:hover {
         color: var(--accent);
+      }
+
+      .nav-menu-toggle {
+        display: none;
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+
+      .nav-menu-toggle:hover,
+      .nav-menu-toggle[aria-expanded="true"] {
+        border-color: rgba(0, 229, 160, 0.35);
+        background: rgba(0, 229, 160, 0.08);
+      }
+
+      .nav-menu-toggle span {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: block;
       }
 
       /* HERO */
@@ -619,14 +668,50 @@
           padding: 0 1rem;
         }
 
+        .nav-menu-toggle {
+          display: inline-flex;
+          margin-left: auto;
+        }
+
         .nav-links {
-          gap: 0.75rem;
-          flex-wrap: wrap;
-          justify-content: flex-end;
+          position: absolute;
+          top: 56px;
+          left: 1rem;
+          right: 1rem;
+          display: grid;
+          gap: 0;
+          margin-left: 0;
+          padding: 0.75rem;
+          background: rgba(17, 17, 24, 0.98);
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(-8px);
+          pointer-events: none;
+          transition:
+            opacity 0.2s,
+            transform 0.2s,
+            visibility 0.2s;
+        }
+
+        .nav-links.is-open {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+          pointer-events: auto;
         }
 
         .nav-links a {
-          font-size: 12px;
+          font-size: 13px;
+          padding: 0.8rem 0.75rem;
+          border-radius: 7px;
+          white-space: normal;
+        }
+
+        .nav-links a:hover {
+          background: rgba(255, 255, 255, 0.05);
         }
 
         .about-grid {
@@ -637,9 +722,23 @@
   </head>
   <body>
     <nav>
-      <div class="nav-logo">KM_</div>
+      <a class="nav-logo" href="#" aria-label="Kunal More home">
+        <img src="favicon.svg" alt="" />
+      </a>
 
-      <div class="nav-links">
+      <button
+        class="nav-menu-toggle"
+        type="button"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="primary-navigation"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" id="primary-navigation">
         <a href="#about">About</a>
         <a href="#skills">Skills</a>
         <a href="#projects">Projects</a>
@@ -738,6 +837,7 @@
           <div class="skill-cat-name">Languages</div>
           <div class="skill-tags">
             <span class="skill-tag">Java</span>
+            <span class="skill-tag">OOPs Concepts</span>
             <span class="skill-tag">JavaScript (ES6+)</span>
           </div>
         </div>
@@ -1034,5 +1134,47 @@
     <footer>
       <p>KUNAL MORE — FULL-STACK DEVELOPER — PUNE, INDIA — 2026</p>
     </footer>
+    <script>
+      const nav = document.querySelector("nav");
+      const menuToggle = document.querySelector(".nav-menu-toggle");
+      const navLinks = document.querySelector(".nav-links");
+      const mobileBreakpoint = window.matchMedia("(max-width: 768px)");
+
+      const closeMenu = () => {
+        navLinks.classList.remove("is-open");
+        menuToggle.setAttribute("aria-expanded", "false");
+      };
+
+      const toggleMenu = () => {
+        const isOpen = navLinks.classList.toggle("is-open");
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+      };
+
+      menuToggle.addEventListener("click", toggleMenu);
+
+      navLinks.addEventListener("click", (event) => {
+        if (event.target.matches("a")) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (mobileBreakpoint.matches && !nav.contains(event.target)) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeMenu();
+        }
+      });
+
+      mobileBreakpoint.addEventListener("change", (event) => {
+        if (!event.matches) {
+          closeMenu();
+        }
+      });
+    </script>
   </body>
 </html>
